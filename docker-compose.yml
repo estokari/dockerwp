@@ -1,0 +1,43 @@
+version: '3.5'
+
+services:
+  dockerwp_nginx:
+    build: ./nginx/
+    container_name: ${PROJECT_NAME}_nginx
+    volumes:
+      - "./nginx/conf:/etc/nginx/conf.d"
+      - "./www:/var/www/html/"
+    ports:
+      - "$NGINX_HTTP_PORT:80"
+    depends_on:
+          - dockerwp_php
+          - dockerwp_db
+
+  dockerwp_php:
+    build: ./php/
+    container_name: ${PROJECT_NAME}_php
+    volumes:
+      - "./www:/var/www/html/"
+
+  dockerwp_db:
+    image: mariadb:latest
+    container_name: ${PROJECT_NAME}_db
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    ports:
+        - "${DB_PORT}:3306"
+    volumes:
+        - "./db:/var/lib/mysql"
+
+  dockerwp_myadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ${PROJECT_NAME}_myadmin
+    ports:
+        - "$MYADMIN_PORT:80"
+    environment:
+        - PMA_HOST=dockerwp_db
+    depends_on:
+        - dockerwp_db
