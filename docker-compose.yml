@@ -41,3 +41,9 @@ services:
         - PMA_HOST=dockerwp_db
     depends_on:
         - dockerwp_db
+
+  dockerwp_wpcli:
+    image: wordpress:cli
+    container_name: ${PROJECT_NAME}_wpcli
+    volumes:
+        - "./www:/var/www/html/"
