@@ -2,3 +2,5 @@
 db/
 www/
 .DS_Store
+*.crt
+*.key
